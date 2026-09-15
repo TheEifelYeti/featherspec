@@ -26,6 +26,7 @@ globs mirror the rules' `paths:` globs. On divergence this file wins.
 ```yaml
 DocLanguage: English # template default until /sdd-setup asks; governs docs and dialogue, wiring stays English.
 FeatherSpecVersion: 1.6.0 # managed by /sdd-featherspec-update; do not edit by hand
+IssueTracker: local # github | jira | local — set by /sdd-setup; the contract lives in .memory-bank/issue-tracker.md
 ```
 
 ## Non-negotiables
@@ -108,6 +109,9 @@ SDD context persists between sessions under `.memory-bank/`:
 - `.memory-bank/activeContext.md` — short session dashboard: focus, active spec, recent
   changes, decisions in flight, blockers, next steps (**max 1–2 screen pages, ~60 lines**)
 - `.memory-bank/techContext.md` — stack, constraints, build/run/test info
+- `.memory-bank/issue-tracker.md` — the issue-tracker contract (conventions, artifact
+  mapping); selected by `IssueTracker:` above, curated from the `issue-tracker-*.md`
+  templates beside it. Ticket-creating commands follow it; if missing, ask to run `/sdd-setup`.
 
 **Before continuing existing work, read `.memory-bank/activeContext.md` first** — it links the
 active spec; its plan sits beside it as `NNNN-slug.plan.md`. Read both next.

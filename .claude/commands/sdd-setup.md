@@ -94,13 +94,40 @@ rendered in `DocLanguage`:
   Say honestly that the scan reads code and, depending on project size, takes time and
   noticeable tokens. Name the alternatives: describe the architecture yourself, or
   seed only the Memory Bank now and scan later. If the scan is chosen: first collect
-  wizard steps 1, 2, 7 and 8 (only the human knows mission, audience, working mode and
+  wizard steps 1, 3, 8 and 9 (only the human knows mission, audience, working mode and
   taste), then run the `/sdd-architecture-scan` workflow yourself, exactly as if the user
   had typed it (its body lives in `.claude/commands/sdd-architecture-scan.md`). Skip wizard
-  steps 3–5 — the scan answers them from the code and writes `techContext.md` and
-  `systemPatterns.md` itself; step 6 shrinks to one confirmation question over the gates
+  steps 4–6 — the scan answers them from the code and writes `techContext.md` and
+  `systemPatterns.md` itself; step 7 shrinks to one confirmation question over the gates
   the scan found. Afterwards finish only actions B (projectbrief + activeContext, plus the
-  *Quality gates* section in `techContext.md` from the step-6 confirmation), D, E and F.
+  *Quality gates* section in `techContext.md` from the step-7 confirmation), C, D, E and F.
+
+## Step 2 (issue tracker)
+
+Ask where issues for this repo are tracked, rendered in `DocLanguage`:
+
+**"Where do you track issues for this project?"**
+
+Offer exactly these choices, one message, with what each means in one clause:
+
+1. **GitHub** — issues live in the repo's GitHub Issues (uses `gh` / the GitHub API)
+2. **Jira** — issues live in your Atlassian Jira instance (uses the Jira REST API v3;
+   needs `JIRA_URL`, `JIRA_EMAIL`, `JIRA_API_TOKEN` in the environment and the project key)
+3. **Local markdown** — no external tracker; tickets are spec files under `.specs/backlog/`
+
+Default posture: if `git remote -v` points at GitHub and no other signal exists, propose
+GitHub. If the user picks Jira, ask for the **project key** and verify access live:
+`GET $JIRA_URL/rest/api/3/project/<KEY>` with HTTP Basic auth from the environment
+variables. If the call fails or credentials are missing, say so plainly, still record
+the choice, and note in `activeContext.md` that Jira is selected but not yet reachable.
+Never ask for or echo the API token itself.
+
+Record the answer as `IssueTracker:` in `AGENTS.md` (values: `github` | `jira` | `local`),
+and copy the matching template `.memory-bank/issue-tracker-<choice>.md` over
+`.memory-bank/issue-tracker.md` (create from template if missing). For Jira, additionally
+write the confirmed project key into `.memory-bank/issue-tracker.md`'s *Project settings*
+section. All later SDD commands read the tracker contract from that file when they say
+"create a ticket" or "fetch the relevant ticket".
 
 ## Read the repo before asking
 
@@ -140,6 +167,8 @@ language, no lecture.
    control case proving the test can fail. Never implement past a just-written test
    without the user's confirmation.* The user changes it by simply saying so.
 8. **Coding preferences** (comments, naming, patterns to avoid)
+9. **Issue tracker** — asked per the Step 2 section above (GitHub / Jira / local markdown);
+   where the environment offers a structured choice UI, present it there.
 
 Steps 6 and 7 are never answered by assumption: if the user skips them, ask each again,
 individually, before writing anything.
@@ -150,6 +179,13 @@ After collecting answers:
 
 **A) Ensure folders** (already present in this template; create only if missing):
 `.memory-bank/`, `.specs/backlog/`, `.specs/active/`, `.specs/done/`, `.specs/plan-archive/`.
+
+**A2) Issue tracker:** set `IssueTracker:` in `AGENTS.md` (values: `github` | `jira` |
+`local`) per the Step 2 answer, and materialize `.memory-bank/issue-tracker.md` from the
+matching template `.memory-bank/issue-tracker-<choice>.md` (copy over an existing file
+only when the tracker choice changed; on a re-run never reset a curated issue-tracker.md
+that already names a different project key — ask instead). For Jira, record the verified
+project key in the *Project settings* section.
 
 **B) Initialize documentation** in `DocLanguage`:
 
