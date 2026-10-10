@@ -30,6 +30,13 @@ re-asking Step 0, and compress the orientation to one sentence: a re-run tunes, 
 re-onboard. The `DocLanguage:` value the template ships with is a default nobody chose, so it
 never makes a run a re-run: a first setup asks Step 0 even though `AGENTS.md` carries a value.
 
+Before the wizard writes anything, read the existing managed settings block in `AGENTS.md`
+and compare the keys present against the settings the template knows (`DocLanguage`,
+`FeatherSpecVersion`, `IssueTracker`). A key the template does not know — a typo
+(`IssueTrackr`), a key renamed by a later release, a manual edit — is named as a finding
+with a proposal ("`IssueTrackr` is not a FeatherSpec setting — did you mean `IssueTracker`?"),
+before the wizard's own writes could preserve it. The user decides; no auto-fix (#21).
+
 **After** `DocLanguage` is set, give the whole orientation in `DocLanguage`:
 
 - Explain Spec-Driven Development in 3–5 plain sentences, rendering this definition

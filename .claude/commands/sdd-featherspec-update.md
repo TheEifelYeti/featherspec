@@ -52,6 +52,12 @@ by cloning the template — say what you see and ask before proceeding.
 1. Locate the constitution: `AGENTS.md`, else `.github/copilot-instructions.md`, else ask.
 2. Read `FeatherSpecVersion:` from its managed settings block. Present → that is the
    installed version.
+   While reading the block, compare the keys present against the settings the template
+   knows (`DocLanguage`, `FeatherSpecVersion`, `IssueTracker`). A key the template does not
+   know — a typo (`IssueTrackr`), a key renamed by a later release, a manual edit — is
+   named, never silently ignored: a finding with a proposal ("`IssueTrackr` is not a
+   FeatherSpec setting — did you mean `IssueTracker`?"), the user decides (#21). No
+   auto-fix, no schema machinery — just naming what was read against what is known.
 3. Absent → the project predates 1.2.0. Estimate via the **probe ladder** (free, offline,
    from the ledger appendix): `.claude/skills/` exists ⇒ 0.1–0.2 · `.claude/commands/`
    without `sdd-clarify.md` ⇒ 0.3 · `sdd-clarify.md` present but the constitution has no
